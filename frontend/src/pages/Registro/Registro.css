@@ -1,0 +1,91 @@
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.logo-section {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+  width: 100%;
+  max-width: 450px;
+}
+
+.card-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.title-underline {
+  width: 40px;
+  height: 4px;
+  background-color: var(--naranja-principal);
+  border-radius: 2px;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texto-oscuro);
+  margin-bottom: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.error-text {
+  color: #d32f2f;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.error-general {
+  color: #d32f2f;
+  background-color: #fdecea;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 15px;
+}
+
+.input-error {
+  border: 1.5px solid #d32f2f !important;
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+  color: var(--texto-suave);
+}
+
+.footer-link {
+  color: var(--naranja-principal);
+  text-decoration: none;
+  font-weight: 700;
+}

@@ -1,0 +1,67 @@
+.brand-title-small {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--texto-oscuro);
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+.title-underline-center {
+  width: 40px;
+  height: 4px;
+  background-color: var(--naranja-principal);
+  border-radius: 2px;
+  margin: 0 auto 30px;
+}
+
+.card-title-center {
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.card-subtitle {
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 14px;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.mensaje-exito {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  border: 1px solid #c8e6c9;
+}
+
+.mensaje-error {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  margin-bottom: 20px;
+  border: 1px solid #ffcdd2;
+}
+
+.footer-link-container {
+  margin-top: 25px;
+  text-align: center;
+}
+
+.back-link {
+  text-decoration: none;
+  color: var(--naranja-principal);
+  font-size: 14px;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.back-link:hover {
+  color: var(--naranja-hover);
+}
