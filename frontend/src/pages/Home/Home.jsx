@@ -1,8 +1,9 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const cerrarSesion = () => {
     navigate('/login');
@@ -10,23 +11,64 @@ function Home() {
 
   return (
     <div className="home-layout">
-      <nav className="navbar">
-        <div className="nav-brand">
-          <div className="logo-box-small">S</div>
-          <span>Stepping Stones</span>
+      <aside className="sidebar">
+        <div className="sidebar-top">
+          <div className="brand-section">
+            <div className="brand-icon">S</div>
+            <div className="brand-text">
+              <h3>Stepping Stones</h3>
+            </div>
+          </div>
+
+          <ul className="sidebar-menu">
+            <li>
+              <Link 
+                to="/home" 
+                className={`sidebar-link ${location.pathname === '/home' ? 'active' : ''}`}
+              >
+                Panel de Control
+              </Link>
+            </li>
+            <li>
+              <Link 
+                to="/home/roles" 
+                className={`sidebar-link ${location.pathname.includes('/roles') ? 'active' : ''}`}
+              >
+                Gestión de Roles
+              </Link>
+            </li>
+          </ul>
         </div>
-        <button className="btn-logout" onClick={cerrarSesion}>
-          Cerrar Sesión
-        </button>
-      </nav>
 
-      <main className="home-content">
-        <header className="home-header">
-          <h1>¡Bienvenido de nuevo!</h1>
-          <p>Este es tu panel central de Stepping Stones.</p>
-        </header>
+        <div className="sidebar-bottom">
+          <button className="sidebar-btn help-btn">
+            Ayuda
+          </button>
+          <button className="sidebar-btn logout-btn" onClick={cerrarSesion}>
+            Cerrar Sesión
+          </button>
+        </div>
+      </aside>
 
-      </main>
+      <div className="main-content">
+      
+        <nav className="top-navbar">
+          <div className="breadcrumb">
+            <strong>Stepping Stones</strong>
+            <span className="separator"></span>
+            <span className="path">
+              Administración / {location.pathname.includes('/roles') ? 'Gestión de Roles' : 'Panel de Control'}
+            </span>
+          </div>
+          <div className="top-nav-actions">
+            <div className="profile-pic">👨‍💼</div>
+          </div>
+        </nav>
+        <main className="dashboard-body">
+          <Outlet />
+        </main>
+        
+      </div>
     </div>
   );
 }
