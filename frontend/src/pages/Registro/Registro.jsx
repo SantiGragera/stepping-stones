@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
 import './Registro.css';
 
 function Registro() {
@@ -41,21 +42,11 @@ function Registro() {
     if (!validarFormulario()) return;
 
     try {
-      const respuesta = await fetch('http://localhost:3001/api/registro', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombreCompleto, email, password })
-      });
-      const data = await respuesta.json();
-      if (respuesta.ok) {
-        alert('¡Cuenta creada exitosamente!');
-        navigate('/login');
-      } else {
-        setErrorGeneral(data.mensaje);
-      }
+      await api.post('/api/registro', { nombreCompleto, email, password });
+      alert('¡Cuenta creada exitosamente!');
+      navigate('/login');
     } catch (err) {
-      console.error(err);
-      setErrorGeneral('Error de conexión.');
+      setErrorGeneral(err.message);
     }
   };
 

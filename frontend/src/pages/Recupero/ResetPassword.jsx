@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { api } from '../../services/api';
 import './ResetPassword.css';
 
 function ResetPassword() {
@@ -18,21 +19,11 @@ function ResetPassword() {
     if (!tieneOchoCaracteres || !tieneMayusculaYNumero) return;
 
     try {
-      const respuesta = await fetch('http://localhost:3001/api/reset-password', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, password })
-      });
-      if (respuesta.ok) {
-        alert('¡Contraseña actualizada!');
-        navigate('/login');
-      } else {
-        const data = await respuesta.json();
-        setMensaje(data.mensaje);
-      }
+      await api.post('/api/reset-password', { token, password });
+      alert('¡Contraseña actualizada!');
+      navigate('/login');
     } catch (err) {
-      console.error(err)
-      setMensaje('Error de conexión.');
+      setMensaje(err.message);
     }
   };
 

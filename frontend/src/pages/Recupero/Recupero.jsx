@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../../services/api';
 import './Recupero.css';
 
 function Recupero() {
@@ -13,22 +14,10 @@ function Recupero() {
     setError('');
 
     try {
-      const respuesta = await fetch('http://localhost:3001/api/recupero', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      const data = await respuesta.json();
-
-      if (respuesta.ok) {
-        setMensaje(data.mensaje);
-      } else {
-        setError(data.mensaje);
-      }
+      const data = await api.post('/api/recupero', { email });
+      setMensaje(data.mensaje);
     } catch (err) {
-      console.error(err);
-      setError('Error de conexión con el servidor.');
+      setError(err.message);
     }
   };
 

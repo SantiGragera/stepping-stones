@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
+import { api } from '../../services/api';
 import './Roles.css';
 
 function Roles() {
   const [roles, setRoles] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [errorCarga, setErrorCarga] = useState('');
   const [mostrarModal, setMostrarModal] = useState(false);
   
   const [idRolEditando, setIdRolEditando] = useState(null);
@@ -10,20 +13,24 @@ function Roles() {
   const [descripcionRol, setDescripcionRol] = useState(''); 
 
   const obtenerRoles = async () => {
+    setCargando(true);
+    setErrorCarga('');
     try {
-      const respuesta = await fetch('http://localhost:3001/api/roles');
-      const data = await respuesta.json();
+      const data = await api.get('/api/roles');
       setRoles(data);
     } catch (error) {
-      console.error('Error al obtener los roles:', error);
+      setErrorCarga(error.message);
+    } finally {
+      setCargando(false);
     }
   };
 
+  // Antes esto duplicaba la lógica de obtenerRoles() en un fetch aparte;
+  // ahora la carga inicial reusa la misma función.
   useEffect(() => {
-    fetch('http://localhost:3001/api/roles')
-      .then((respuesta) => respuesta.json())
-      .then((data) => setRoles(data))
-      .catch((error) => console.error('Error en carga inicial:', error));
+    // Carga de datos al montar el componente: patrón estándar de fetch-on-mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    obtenerRoles();
   }, []);
 
   const getIconoRol = (nombre) => {
@@ -63,35 +70,25 @@ function Roles() {
 
     try {
       if (idRolEditando) {
-        await fetch(`http://localhost:3001/api/roles/${idRolEditando}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datosRol)
-        });
+        await api.put(`/api/roles/${idRolEditando}`, datosRol);
       } else {
-        await fetch('http://localhost:3001/api/roles', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(datosRol)
-        });
+        await api.post('/api/roles', datosRol);
       }
       
-      obtenerRoles();
+      await obtenerRoles();
       setMostrarModal(false);
     } catch (error) {
-      console.error('Error al guardar el rol:', error);
+      alert(error.message);
     }
   };
 
   const eliminarRol = async (id) => {
     if(window.confirm('¿Estás seguro de eliminar este rol?')) {
       try {
-        await fetch(`http://localhost:3001/api/roles/${id}`, {
-          method: 'DELETE'
-        });
-        obtenerRoles();
+        await api.delete(`/api/roles/${id}`);
+        await obtenerRoles();
       } catch (error) {
-        console.error('Error al eliminar:', error);
+        alert(error.message);
       }
     }
   };
@@ -117,7 +114,15 @@ function Roles() {
         </div>
         
         <div className="roles-table-body">
-          {roles.map((rol) => (
+          {cargando && (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#718096' }}>Cargando roles...</div>
+          )}
+
+          {!cargando && errorCarga && (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#c53030' }}>{errorCarga}</div>
+          )}
+
+          {!cargando && !errorCarga && roles.map((rol) => (
             <div className="roles-row" key={rol.id_rol}>
               <div className="col-nombre row-nombre">
                 <div className="rol-icon-box">
@@ -140,7 +145,7 @@ function Roles() {
               </div>
             </div>
           ))}
-          {roles.length === 0 && (
+          {!cargando && !errorCarga && roles.length === 0 && (
             <div style={{ padding: '20px', textAlign: 'center', color: '#718096' }}>No hay roles cargados.</div>
           )}
         </div>

@@ -1,11 +1,14 @@
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { usuario, logout } = useAuth();
 
   const cerrarSesion = () => {
+    logout();
     navigate('/login');
   };
 
@@ -61,7 +64,7 @@ function Home() {
             </span>
           </div>
           <div className="top-nav-actions">
-            <div className="profile-pic">👨‍💼</div>
+            <div className="profile-pic" title={usuario ? `${usuario.nombre} ${usuario.apellido}` : ''}>👨‍💼</div>
           </div>
         </nav>
         <main className="dashboard-body">
