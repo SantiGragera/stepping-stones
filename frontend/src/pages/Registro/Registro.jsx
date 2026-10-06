@@ -14,20 +14,33 @@ function Registro() {
 
   const navigate = useNavigate();
 
+  // HU02 - Escenario 2: la alerta de seguridad se muestra mientras el usuario
+  // interactúa con el campo, no solo al enviar el formulario.
+  const REGEX_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const REGEX_PASSWORD = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+  const validarEmailEnVivo = (valor) => {
+    setEmail(valor);
+    if (errorEmail && REGEX_EMAIL.test(valor)) setErrorEmail('');
+  };
+
+  const validarPasswordEnVivo = (valor) => {
+    setPassword(valor);
+    setErrorPassword(valor && !REGEX_PASSWORD.test(valor) ? 'Mínimo 8 caracteres, una mayúscula y un número' : '');
+  };
+
   const validarFormulario = () => {
     let esValido = true;
     setErrorEmail('');
     setErrorPassword('');
     setErrorGeneral('');
 
-    const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!regexEmail.test(email)) {
+    if (!REGEX_EMAIL.test(email)) {
       setErrorEmail('El formato de correo no es válido');
       esValido = false;
     }
 
-    const regexPassword = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
-    if (!regexPassword.test(password)) {
+    if (!REGEX_PASSWORD.test(password)) {
       setErrorPassword('Mínimo 8 caracteres, una mayúscula y un número');
       esValido = false;
     } else if (password !== repetirPassword) {
@@ -81,7 +94,8 @@ return (
             placeholder="Email" 
             required 
             value={email} 
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => validarEmailEnVivo(e.target.value)}
+            onBlur={() => setErrorEmail(email && !REGEX_EMAIL.test(email) ? 'El formato de correo no es válido' : '')}
             className={errorEmail ? 'input-error' : ''} 
           />
           {errorEmail && <span className="error-text">{errorEmail}</span>}
@@ -95,7 +109,7 @@ return (
               placeholder="Contraseña" 
               required 
               value={password} 
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => validarPasswordEnVivo(e.target.value)}
               className={errorPassword ? 'input-error' : ''} 
             />
           </div>

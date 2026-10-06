@@ -8,6 +8,8 @@ import ResetPassword from './pages/Recupero/ResetPassword';
 import Home from './pages/Home/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Roles from './pages/Roles/Roles';
+import Cobranzas from './pages/Cobranzas/Cobranzas';
+import { ROLES_COBRANZAS } from './constants/roles';
 
 function App() {
   return (
@@ -29,6 +31,15 @@ function App() {
           >
             <Route index element={<Dashboard />} />
             <Route path="roles" element={<Roles />} />
+            {/* Sprint 4: Cobranzas - Secretaria, Coordinadora Administrativa y Directora */}
+            <Route
+              path="cobranzas"
+              element={
+                <ProtectedRoute roles={ROLES_COBRANZAS}>
+                  <Cobranzas />
+                </ProtectedRoute>
+              }
+            />
           </Route>
         </Routes>
       </Router>

@@ -18,7 +18,7 @@ function Login() {
 
     try {
       const data = await api.post('/api/login', { email, password });
-      login(data.usuario);
+      login(data.usuario, data.token);
       navigate('/home');
     } catch (err) {
       setError(err.message);

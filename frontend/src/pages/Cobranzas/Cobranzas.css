@@ -1,0 +1,360 @@
+/* Sprint 4 - Gestión de Cobranzas.
+   Reutiliza las clases compartidas del ABM de Roles (.btn-agregar, .btn-cancelar,
+   .action-btn, .modal-overlay, .modal-content, .modal-actions) para mantener el mismo estilo. */
+
+.cobranzas-container {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.cobranzas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+
+.cobranzas-header h2 {
+  font-size: 32px;
+  color: #2d3748;
+  margin: 0 0 10px 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.cobranzas-header p {
+  color: #718096;
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ---------- Filtros (HU11) ---------- */
+
+.cobranzas-filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filtro-alumno,
+.filtro-mes {
+  border: 1px solid #e2e8f0;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #2d3748;
+}
+
+.filtro-alumno {
+  flex: 1;
+}
+
+.filtro-mes {
+  min-width: 180px;
+}
+
+.filtro-alumno:focus,
+.filtro-mes:focus {
+  outline: none;
+  border-color: #a35d18;
+  box-shadow: 0 0 0 3px rgba(163, 93, 24, 0.12);
+}
+
+/* ---------- Tabla ---------- */
+
+.cobranzas-card {
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+.cobranzas-table-header,
+.cobranzas-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1.1fr 1.4fr 1.2fr 90px;
+  align-items: center;
+  padding: 0 24px;
+  gap: 12px;
+}
+
+.cobranzas-table-header {
+  background-color: #f8f9fa;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #a0aec0;
+  letter-spacing: 0.5px;
+}
+
+.cobranzas-row {
+  padding-top: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f0f2f5;
+  font-size: 14px;
+  color: #4a5568;
+  transition: background-color 0.2s;
+}
+
+.cobranzas-row:last-child {
+  border-bottom: none;
+}
+
+.cobranzas-row:hover {
+  background-color: #fafbfd;
+}
+
+.celda-alumno {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.celda-alumno strong {
+  color: #2d3748;
+  font-weight: 700;
+}
+
+.avatar-iniciales {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #fff5eb;
+  color: #a35d18;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.celda-monto {
+  color: #2f855a;
+  font-weight: 700;
+}
+
+.badge-metodo {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.metodo-efectivo {
+  background-color: #f0fff4;
+  color: #276749;
+}
+
+.metodo-transferencia {
+  background-color: #ebf8ff;
+  color: #2b6cb0;
+}
+
+.metodo-digital {
+  background-color: #e6f6ff;
+  color: #2c5282;
+}
+
+.celda-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.celda-acciones .delete-btn:hover {
+  color: #e53e3e;
+  background-color: #fff5f5;
+}
+
+.cobranzas-estado {
+  padding: 24px;
+  text-align: center;
+  color: #718096;
+}
+
+.cobranzas-estado.estado-error {
+  color: #c53030;
+}
+
+/* ---------- Modal alta / edición (HU09 / HU10) ---------- */
+
+.cobranza-modal {
+  width: 440px;
+  max-width: calc(100vw - 32px);
+}
+
+.cobranza-modal h3 {
+  margin-bottom: 4px;
+}
+
+.modal-subtitulo {
+  color: #a0aec0;
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.cobranza-modal label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 6px;
+}
+
+.cobranza-modal select,
+.input-monto {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background-color: white;
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.cobranza-modal select {
+  padding: 10px;
+}
+
+.input-monto {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: #718096;
+}
+
+/* Pisa el estilo genérico ".modal-content input" del ABM de Roles */
+.cobranza-modal .input-monto input {
+  border: none;
+  margin: 0;
+  padding: 10px 10px 10px 6px;
+  outline: none;
+  background: transparent;
+}
+
+.cobranza-modal select:focus,
+.input-monto:focus-within {
+  outline: none;
+  border-color: #a35d18;
+}
+
+.cobranza-modal .campo-error {
+  border-color: #e53e3e;
+}
+
+.texto-error {
+  display: block;
+  color: #e53e3e;
+  font-size: 12px;
+  margin-bottom: 8px;
+}
+
+.cobranza-modal form > select,
+.cobranza-fila {
+  margin-bottom: 14px;
+}
+
+.cobranza-modal form > select + .texto-error {
+  margin-top: -10px;
+}
+
+.cobranza-fila {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.cobranza-error-general {
+  background-color: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fed7d7;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
+.cobranza-modal .modal-actions {
+  margin-top: 8px;
+}
+
+.cobranza-modal button:disabled,
+.cobranza-modal-eliminar button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- Modal de eliminación (HU12) ---------- */
+
+.cobranza-modal-eliminar {
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  text-align: center;
+}
+
+.cobranza-modal-eliminar h3 {
+  margin-bottom: 10px;
+}
+
+.cobranza-modal-eliminar p {
+  color: #718096;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.cobranza-modal-eliminar strong {
+  color: #2d3748;
+}
+
+.icono-advertencia {
+  width: 44px;
+  height: 44px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background-color: #fff5f5;
+  color: #e53e3e;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-actions.centrado {
+  justify-content: center;
+}
+
+.btn-eliminar {
+  background-color: #e53e3e;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-eliminar:hover {
+  background-color: #c53030;
+}
+
+@media (max-width: 800px) {
+  .cobranzas-header,
+  .cobranzas-filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cobranzas-table-header {
+    display: none;
+  }
+
+  .cobranzas-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -11,6 +11,7 @@ function Roles() {
   const [idRolEditando, setIdRolEditando] = useState(null);
   const [nombreRol, setNombreRol] = useState('');
   const [descripcionRol, setDescripcionRol] = useState(''); 
+  const [busqueda, setBusqueda] = useState('');
 
   const obtenerRoles = async () => {
     setCargando(true);
@@ -32,6 +33,14 @@ function Roles() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     obtenerRoles();
   }, []);
+
+  // HU07: búsqueda de roles por nombre o descripción.
+  const textoBusqueda = busqueda.trim().toLowerCase();
+  const rolesFiltrados = roles.filter((rol) =>
+    !textoBusqueda ||
+    rol.nombre_rol.toLowerCase().includes(textoBusqueda) ||
+    (rol.descripcion || '').toLowerCase().includes(textoBusqueda)
+  );
 
   const getIconoRol = (nombre) => {
     if (!nombre) return null;
@@ -83,6 +92,8 @@ function Roles() {
   };
 
   const eliminarRol = async (id) => {
+    // HU08 - Escenario 2: alerta de confirmación antes de eliminar.
+    // HU08 - Escenario 1: si el rol tiene usuarios, el backend rechaza la baja y se muestra su mensaje.
     if(window.confirm('¿Estás seguro de eliminar este rol?')) {
       try {
         await api.delete(`/api/roles/${id}`);
@@ -106,6 +117,14 @@ function Roles() {
         </button>
       </header>
 
+      <input
+        type="search"
+        className="roles-busqueda"
+        placeholder="Buscar rol por nombre o descripción..."
+        value={busqueda}
+        onChange={(e) => setBusqueda(e.target.value)}
+      />
+
       <div className="roles-card">
         <div className="roles-table-header">
           <div className="col-nombre">NOMBRE DEL ROL</div>
@@ -122,7 +141,7 @@ function Roles() {
             <div style={{ padding: '20px', textAlign: 'center', color: '#c53030' }}>{errorCarga}</div>
           )}
 
-          {!cargando && !errorCarga && roles.map((rol) => (
+          {!cargando && !errorCarga && rolesFiltrados.map((rol) => (
             <div className="roles-row" key={rol.id_rol}>
               <div className="col-nombre row-nombre">
                 <div className="rol-icon-box">
@@ -145,8 +164,10 @@ function Roles() {
               </div>
             </div>
           ))}
-          {!cargando && !errorCarga && roles.length === 0 && (
-            <div style={{ padding: '20px', textAlign: 'center', color: '#718096' }}>No hay roles cargados.</div>
+          {!cargando && !errorCarga && rolesFiltrados.length === 0 && (
+            <div style={{ padding: '20px', textAlign: 'center', color: '#718096' }}>
+              {roles.length === 0 ? 'No hay roles cargados.' : 'Ningún rol coincide con la búsqueda.'}
+            </div>
           )}
         </div>
       </div>

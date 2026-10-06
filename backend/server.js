@@ -5,6 +5,9 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/auth.routes');
 const rolesRoutes = require('./routes/roles.routes');
+const cobranzasRoutes = require('./routes/cobranzas.routes');
+const catalogosRoutes = require('./routes/catalogos.routes');
+const { requiereAutenticacion } = require('./middlewares/auth.middleware');
 
 const app = express();
 
@@ -15,8 +18,13 @@ app.get('/', (req, res) => {
   res.send('El servidor de Stepping Stones está funcionando perfecto.');
 });
 
+// Rutas públicas: login, registro y recupero de contraseña (Sprint 1).
 app.use('/api', authRoutes);
-app.use('/api/roles', rolesRoutes);
+
+// Rutas privadas: requieren el JWT generado en el login (HU04).
+app.use('/api/roles', requiereAutenticacion, rolesRoutes);          // Sprint 2
+app.use('/api/cobranzas', requiereAutenticacion, cobranzasRoutes);  // Sprint 4
+app.use('/api', catalogosRoutes);                                   // alumnos y métodos de pago (selects de Cobranzas)
 
 // Manejo centralizado de rutas no encontradas y errores inesperados.
 app.use((req, res) => {

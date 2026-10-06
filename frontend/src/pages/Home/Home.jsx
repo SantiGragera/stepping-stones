@@ -1,11 +1,18 @@
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { ROLES_COBRANZAS } from '../../constants/roles';
 import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { usuario, logout } = useAuth();
+  const { usuario, logout, tieneRol } = useAuth();
+
+  const seccionActual = location.pathname.includes('/roles')
+    ? 'Gestión de Roles'
+    : location.pathname.includes('/cobranzas')
+      ? 'Cobranzas'
+      : 'Panel de Control';
 
   const cerrarSesion = () => {
     logout();
@@ -40,6 +47,16 @@ function Home() {
                 Gestión de Roles
               </Link>
             </li>
+            {tieneRol(...ROLES_COBRANZAS) && (
+              <li>
+                <Link
+                  to="/home/cobranzas"
+                  className={`sidebar-link ${location.pathname.includes('/cobranzas') ? 'active' : ''}`}
+                >
+                  Cobranzas
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -60,11 +77,11 @@ function Home() {
             <strong>Stepping Stones</strong>
             <span className="separator"></span>
             <span className="path">
-              Administración / {location.pathname.includes('/roles') ? 'Gestión de Roles' : 'Panel de Control'}
+              Administración / {seccionActual}
             </span>
           </div>
           <div className="top-nav-actions">
-            <div className="profile-pic" title={usuario ? `${usuario.nombre} ${usuario.apellido}` : ''}>👨‍💼</div>
+            <div className="profile-pic" title={usuario ? `${usuario.nombre} ${usuario.apellido} - ${usuario.nombre_rol || ''}` : ''}>👨‍💼</div>
           </div>
         </nav>
         <main className="dashboard-body">

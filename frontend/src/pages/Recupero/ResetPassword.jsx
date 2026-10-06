@@ -19,7 +19,7 @@ function ResetPassword() {
     if (!tieneOchoCaracteres || !tieneMayusculaYNumero) return;
 
     try {
-      await api.post('/api/reset-password', { token, password });
+      await api.put('/api/reset-password', { token, password });
       alert('¡Contraseña actualizada!');
       navigate('/login');
     } catch (err) {

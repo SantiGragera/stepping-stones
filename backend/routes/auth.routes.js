@@ -5,8 +5,13 @@ const db = require('../config/db');
 const transporter = require('../config/mailer');
 const { hashPassword, verifyPassword } = require('../utils/password');
 const { esEmailValido, esPasswordValida, esTextoNoVacio } = require('../utils/validators');
+const { generarToken } = require('../utils/jwt');
 
 const router = express.Router();
+
+// HU04 - Escenario 1: mismo mensaje si falla el email o la contraseña,
+// para no revelar cuál de los dos campos es el incorrecto.
+const MENSAJE_CREDENCIALES_INVALIDAS = 'Error: Credenciales inválidas';
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -15,7 +20,11 @@ router.post('/login', (req, res) => {
     return res.status(400).json({ mensaje: 'Email y contraseña son obligatorios' });
   }
 
-  const query = 'SELECT id_usuario, nombre, apellido, email, id_rol, password FROM usuarios WHERE email = ?';
+  const query = `
+    SELECT u.id_usuario, u.nombre, u.apellido, u.email, u.id_rol, r.nombre_rol, u.password
+    FROM usuarios u
+    INNER JOIN roles r ON r.id_rol = u.id_rol
+    WHERE u.email = ?`;
 
   db.query(query, [email.trim()], (err, results) => {
     if (err) {
@@ -24,14 +33,14 @@ router.post('/login', (req, res) => {
     }
 
     if (results.length === 0) {
-      return res.status(401).json({ mensaje: 'Credenciales inválidas' });
+      return res.status(401).json({ mensaje: MENSAJE_CREDENCIALES_INVALIDAS });
     }
 
     const usuario = results[0];
     const { valid, legacy } = verifyPassword(password, usuario.password);
 
     if (!valid) {
-      return res.status(401).json({ mensaje: 'Credenciales inválidas' });
+      return res.status(401).json({ mensaje: MENSAJE_CREDENCIALES_INVALIDAS });
     }
 
     // Migración transparente: si la contraseña todavía estaba en texto plano
@@ -44,7 +53,17 @@ router.post('/login', (req, res) => {
     }
 
     delete usuario.password;
-    res.status(200).json({ mensaje: 'Login exitoso', usuario });
+
+    // HU04 - Escenario 2: credenciales correctas => se genera un JWT firmado
+    // que el frontend envía en el header Authorization de las peticiones siguientes.
+    const token = generarToken({
+      id_usuario: usuario.id_usuario,
+      email: usuario.email,
+      id_rol: usuario.id_rol,
+      nombre_rol: usuario.nombre_rol,
+    });
+
+    res.status(200).json({ mensaje: 'Login exitoso', usuario, token });
   });
 });
 
@@ -127,7 +146,8 @@ router.post('/recupero', (req, res) => {
   });
 });
 
-router.post('/reset-password', (req, res) => {
+// HU05 - Escenario 2: PUT /reset-password actualiza el hash de la contraseña.
+router.put('/reset-password', (req, res) => {
   const { token, password } = req.body;
 
   if (!esTextoNoVacio(token) || !esPasswordValida(password)) {
