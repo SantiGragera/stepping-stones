@@ -4,14 +4,6 @@ import { useAuth } from '../../context/AuthContext';
 import { ROLES_GESTION_COBRANZAS } from '../../constants/roles';
 import './Cobranzas.css';
 
-// =====================================================================
-// Sprint 4 - ABM Transaccional: Gestión de Cobranzas (pagos de cuota)
-//   HU09 Registro (alta)        -> modal "Registrar Cobranza"
-//   HU10 Modificación           -> mismo modal en modo edición
-//   HU11 Consulta y listado     -> tabla + filtros por alumno y mes
-//   HU12 Eliminación lógica     -> modal de confirmación
-// =====================================================================
-
 const MESES = [
   'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
@@ -31,7 +23,6 @@ function mesActual() {
   return `${MESES[hoy.getMonth()]} ${hoy.getFullYear()}`;
 }
 
-// Opciones del select "Mes correspondiente": desde 6 meses atrás hasta 6 meses adelante.
 function opcionesDeMes(mesExtra) {
   const hoy = new Date();
   const opciones = [];
@@ -39,7 +30,6 @@ function opcionesDeMes(mesExtra) {
     const fecha = new Date(hoy.getFullYear(), hoy.getMonth() + desplazamiento, 1);
     opciones.push(`${MESES[fecha.getMonth()]} ${fecha.getFullYear()}`);
   }
-  // Al editar una cobranza vieja, su mes puede no estar en el rango: se agrega igual.
   if (mesExtra && !opciones.includes(mesExtra)) opciones.unshift(mesExtra);
   return opciones;
 }
@@ -65,7 +55,6 @@ function claseMetodo(nombreMetodo = '') {
   return 'metodo-digital';
 }
 
-// HU09 - Escenarios 1 y 2 / HU10 - Escenario 2: misma validación para alta y edición.
 function validarFormulario(formulario) {
   const errores = {};
   if (!formulario.id_alumno) errores.id_alumno = 'Seleccioná un alumno';
@@ -81,10 +70,8 @@ function validarFormulario(formulario) {
 
 function Cobranzas() {
   const { tieneRol } = useAuth();
-  // HU09/HU10/HU12 son de la Secretaria; la Coordinadora Administrativa solo consulta (HU11).
   const puedeGestionar = tieneRol(...ROLES_GESTION_COBRANZAS);
 
-  // Listado (HU11)
   const [cobranzas, setCobranzas] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState('');
@@ -92,11 +79,9 @@ function Cobranzas() {
   const [filtroMes, setFiltroMes] = useState('');
   const [mesesDisponibles, setMesesDisponibles] = useState([]);
 
-  // Catálogos para los selects del formulario
   const [alumnos, setAlumnos] = useState([]);
   const [metodosPago, setMetodosPago] = useState([]);
 
-  // Modal de alta / edición (HU09 / HU10)
   const [mostrarModal, setMostrarModal] = useState(false);
   const [idEditando, setIdEditando] = useState(null);
   const [formulario, setFormulario] = useState(FORMULARIO_VACIO);
@@ -104,7 +89,6 @@ function Cobranzas() {
   const [errorFormulario, setErrorFormulario] = useState('');
   const [guardando, setGuardando] = useState(false);
 
-  // Modal de eliminación (HU12)
   const [cobranzaAEliminar, setCobranzaAEliminar] = useState(null);
   const [eliminando, setEliminando] = useState(false);
 
@@ -133,7 +117,6 @@ function Cobranzas() {
     }
   }, []);
 
-  // Carga de catálogos una sola vez al montar la página.
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- fetch-on-mount
     obtenerMeses();
@@ -145,8 +128,6 @@ function Cobranzas() {
       .catch((error) => setErrorCarga(error.message));
   }, [obtenerMeses]);
 
-  // HU11 - Escenario 2: el filtro se aplica en el servidor (query params).
-  // Para el texto se espera 300 ms después de la última tecla, así no se hace una consulta por letra.
   useEffect(() => {
     const espera = setTimeout(() => obtenerCobranzas(filtroAlumno, filtroMes), 300);
     return () => clearTimeout(espera);
@@ -156,8 +137,6 @@ function Cobranzas() {
     await Promise.all([obtenerCobranzas(filtroAlumno, filtroMes), obtenerMeses()]);
   };
 
-  // ------------------------- Alta / edición -------------------------
-
   const abrirModalCrear = () => {
     setIdEditando(null);
     setFormulario({ ...FORMULARIO_VACIO, mes_correspondiente: mesActual() });
@@ -166,7 +145,6 @@ function Cobranzas() {
     setMostrarModal(true);
   };
 
-  // HU10: se reutiliza el modal de alta, precargando los datos de la cobranza.
   const abrirModalEditar = (cobranza) => {
     setIdEditando(cobranza.id_cobranza);
     setFormulario({
@@ -220,8 +198,6 @@ function Cobranzas() {
     }
   };
 
-  // ---------------------- Eliminación lógica ------------------------
-
   const confirmarEliminacion = async () => {
     setEliminando(true);
     try {
@@ -252,7 +228,6 @@ function Cobranzas() {
         )}
       </header>
 
-      {/* HU11 - Barra de filtros */}
       <div className="cobranzas-filtros">
         <input
           type="search"
@@ -321,7 +296,6 @@ function Cobranzas() {
         </div>
       </div>
 
-      {/* HU09 / HU10 - Modal de alta y edición */}
       {mostrarModal && (
         <div className="modal-overlay" onClick={cerrarModal}>
           <div className="modal-content cobranza-modal" onClick={(e) => e.stopPropagation()}>

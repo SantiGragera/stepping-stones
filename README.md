@@ -11,8 +11,9 @@ Práctica Profesionalizante · ISSD · Santiago Roman Gragera
 
 1. **Base de datos**
    - Si es una base nueva, corré `mysql -u root -p < database/schema.sql`.
-   - Si ya tenés la base de los sprints anteriores, corré solo la migración del Sprint 4:
+   - Si ya tenés la base de los sprints anteriores, corré solo las migraciones que te falten, en orden:
      `mysql -u root -p stepping_stones_db < database/migrations/sprint4_cobranzas_activo.sql`
+     `mysql -u root -p stepping_stones_db < database/migrations/sprint5_alumnos_activo.sql`
 2. **Backend:** copiá `backend/.env.example` a `backend/.env` y completalo. Incluí `JWT_SECRET`. Después corré `cd backend && npm install && npm run dev`.
 3. **Frontend:** copiá `frontend/.env.example` a `frontend/.env`. Después corré `cd frontend && npm install && npm run dev`.
 4. **Tests del backend:** `cd backend && npm test`.
@@ -70,3 +71,22 @@ Usuarios de prueba (del script de la base):
 - **Permisos:**
   - La Secretaria y la Directora registran, editan y eliminan cobranzas.
   - La Coordinadora Administrativa solo las consulta.
+
+### Sprint 5: Listados e informes
+
+| HU | Qué hace | Dónde está |
+|---|---|---|
+| HU13 | Listado de alumnos con estado de cuota: búsqueda, filtros por mes y estado, orden por columna, paginación de a 10 y exportación a CSV | `GET /api/alumnos/estado-cuotas` en `backend/routes/alumnos.routes.js`, pantalla `frontend/src/pages/Alumnos/` |
+| HU14 | Informe mensual de recaudación: indicadores con su fórmula, comparación con el mes anterior, gráfico, desglose por método de pago y descarga en PDF | `GET /api/informes/recaudacion` y `/recaudacion/pdf` en `backend/routes/informes.routes.js`, pantalla `frontend/src/pages/Informes/` |
+
+- **Definiciones de cálculo** (las mismas que figuran en la documentación del sprint):
+  - Cada cobranza es la cuota completa del mes; no hay pagos parciales.
+  - Un alumno está "Al día" en el mes M si tiene al menos una cobranza activa con `mes_correspondiente = M`; si no, "Adeuda".
+  - El listado y el indicador "Alumnos al día" usan el **mes correspondiente** de la cuota. Total recaudado, pagos y monto promedio usan la **fecha de pago**.
+  - Monto promedio = total recaudado ÷ pagos registrados. Sin pagos se muestra "—".
+  - Alumnos al día = (alumnos activos con una cobranza activa del mes ÷ alumnos activos) × 100. Los alumnos dados de baja (`activo = 0`) no cuentan.
+  - Variación porcentual = (actual − anterior) ÷ anterior × 100. Si el anterior es cero se muestra "sin base de comparación". Para "Alumnos al día" la variación va en puntos porcentuales.
+  - Las fórmulas están en `backend/utils/informe.js` y se prueban en `backend/tests/informe.test.js`.
+- **Base de datos:** la migración `sprint5_alumnos_activo.sql` agrega `alumnos.activo` y dos índices sobre `cobranzas`. No crea tablas nuevas.
+- **PDF:** se genera en el backend con `pdfkit` (`backend/utils/informePdf.js`). Después de actualizar, corré `cd backend && npm install`.
+- **Permisos:** el listado lo consultan la Secretaria, la Coordinadora Administrativa y la Directora; el informe, la Directora y la Coordinadora Administrativa.

@@ -7,6 +7,8 @@ const authRoutes = require('./routes/auth.routes');
 const rolesRoutes = require('./routes/roles.routes');
 const cobranzasRoutes = require('./routes/cobranzas.routes');
 const catalogosRoutes = require('./routes/catalogos.routes');
+const alumnosRoutes = require('./routes/alumnos.routes');
+const informesRoutes = require('./routes/informes.routes');
 const { requiereAutenticacion } = require('./middlewares/auth.middleware');
 
 const app = express();
@@ -24,6 +26,8 @@ app.use('/api', authRoutes);
 // Rutas privadas: requieren el JWT generado en el login (HU04).
 app.use('/api/roles', requiereAutenticacion, rolesRoutes);          // Sprint 2
 app.use('/api/cobranzas', requiereAutenticacion, cobranzasRoutes);  // Sprint 4
+app.use('/api/alumnos', requiereAutenticacion, alumnosRoutes);      // Sprint 5: listado de alumnos con estado de cuota (HU13)
+app.use('/api/informes', requiereAutenticacion, informesRoutes);    // Sprint 5: informe de recaudación (HU14)
 app.use('/api', catalogosRoutes);                                   // alumnos y métodos de pago (selects de Cobranzas)
 
 // Manejo centralizado de rutas no encontradas y errores inesperados.

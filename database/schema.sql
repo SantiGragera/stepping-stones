@@ -4,6 +4,7 @@
 --   Sprint 1: tablas base + columnas reset_token / reset_token_expires (HU05)
 --   Sprint 2: columna descripcion en roles (ABM de Roles, HU06-HU08)
 --   Sprint 4: columna activo en cobranzas (eliminación lógica, HU12)
+--   Sprint 5: columna activo en alumnos e índices de cobranzas (HU13, HU14)
 --
 -- Uso (base nueva):   mysql -u root -p < database/schema.sql
 -- Si ya tenés la base creada de sprints anteriores, NO corras este script:
@@ -67,7 +68,8 @@ CREATE TABLE alumnos (
   dni VARCHAR(15) NOT NULL UNIQUE,
   nombre_tutor VARCHAR(100) NOT NULL,
   email_tutor VARCHAR(100) NOT NULL,
-  telefono_tutor VARCHAR(20)
+  telefono_tutor VARCHAR(20),
+  activo BOOLEAN NOT NULL DEFAULT 1        -- Sprint 5: solo los alumnos activos entran al listado y al informe
 );
 
 CREATE TABLE asistencia_docentes (
@@ -101,7 +103,9 @@ CREATE TABLE cobranzas (
   FOREIGN KEY (id_alumno) REFERENCES alumnos(id_alumno) ON DELETE CASCADE,
   FOREIGN KEY (id_usuario_secretaria) REFERENCES usuarios(id_usuario),
   FOREIGN KEY (id_metodo_pago) REFERENCES metodos_pago(id_metodo_pago),
-  CONSTRAINT chk_cobranzas_monto_positivo CHECK (monto > 0)
+  CONSTRAINT chk_cobranzas_monto_positivo CHECK (monto > 0),
+  INDEX idx_cobranzas_mes_activo (mes_correspondiente, activo),   -- Sprint 5: listado por mes
+  INDEX idx_cobranzas_fecha_activo (fecha_pago, activo)           -- Sprint 5: informe por fecha de pago
 );
 
 CREATE TABLE libretas (

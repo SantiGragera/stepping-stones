@@ -9,7 +9,9 @@ import Home from './pages/Home/Home';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Roles from './pages/Roles/Roles';
 import Cobranzas from './pages/Cobranzas/Cobranzas';
-import { ROLES_COBRANZAS } from './constants/roles';
+import Alumnos from './pages/Alumnos/Alumnos';
+import Informes from './pages/Informes/Informes';
+import { ROLES_COBRANZAS, ROLES_ALUMNOS, ROLES_INFORMES } from './constants/roles';
 
 function App() {
   return (
@@ -37,6 +39,24 @@ function App() {
               element={
                 <ProtectedRoute roles={ROLES_COBRANZAS}>
                   <Cobranzas />
+                </ProtectedRoute>
+              }
+            />
+            {/* Sprint 5: listado de alumnos con estado de cuota (HU13) */}
+            <Route
+              path="alumnos"
+              element={
+                <ProtectedRoute roles={ROLES_ALUMNOS}>
+                  <Alumnos />
+                </ProtectedRoute>
+              }
+            />
+            {/* Sprint 5: informe mensual de recaudación (HU14) */}
+            <Route
+              path="informes"
+              element={
+                <ProtectedRoute roles={ROLES_INFORMES}>
+                  <Informes />
                 </ProtectedRoute>
               }
             />

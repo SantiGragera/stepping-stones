@@ -52,11 +52,38 @@ async function apiRequest(path, { method = 'GET', body } = {}) {
   return data;
 }
 
+// Descarga de archivos binarios (HU14: PDF del informe). Devuelve { blob, nombre }.
+// Usa el mismo header Authorization que el resto de las peticiones.
+async function descargarArchivo(path) {
+  const token = obtenerToken();
+  let respuesta;
+  try {
+    respuesta = await fetch(`${API_URL}${path}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  } catch (err) {
+    throw new Error('Error de conexión con el servidor.', { cause: err });
+  }
+
+  if (!respuesta.ok) {
+    const data = await respuesta.json().catch(() => ({}));
+    if (respuesta.status === 401 && token) window.dispatchEvent(new Event(EVENTO_SESION_EXPIRADA));
+    const error = new Error(data.mensaje || 'No se pudo descargar el archivo.');
+    error.status = respuesta.status;
+    throw error;
+  }
+
+  const disposicion = respuesta.headers.get('Content-Disposition') || '';
+  const coincidencia = /filename="?([^"]+)"?/.exec(disposicion);
+  return { blob: await respuesta.blob(), nombre: coincidencia ? coincidencia[1] : 'descarga' };
+}
+
 export const api = {
   get: (path) => apiRequest(path),
   post: (path, body) => apiRequest(path, { method: 'POST', body }),
   put: (path, body) => apiRequest(path, { method: 'PUT', body }),
   delete: (path) => apiRequest(path, { method: 'DELETE' }),
+  descargar: descargarArchivo,
 };
 
 export default API_URL;

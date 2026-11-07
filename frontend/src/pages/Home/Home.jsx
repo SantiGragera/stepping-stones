@@ -1,6 +1,6 @@
 import { useNavigate, Link, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { ROLES_COBRANZAS } from '../../constants/roles';
+import { ROLES_COBRANZAS, ROLES_ALUMNOS, ROLES_INFORMES } from '../../constants/roles';
 import './Home.css';
 
 function Home() {
@@ -12,7 +12,11 @@ function Home() {
     ? 'Gestión de Roles'
     : location.pathname.includes('/cobranzas')
       ? 'Cobranzas'
-      : 'Panel de Control';
+      : location.pathname.includes('/alumnos')
+        ? 'Alumnos'
+        : location.pathname.includes('/informes')
+          ? 'Informes'
+          : 'Panel de Control';
 
   const cerrarSesion = () => {
     logout();
@@ -54,6 +58,26 @@ function Home() {
                   className={`sidebar-link ${location.pathname.includes('/cobranzas') ? 'active' : ''}`}
                 >
                   Cobranzas
+                </Link>
+              </li>
+            )}
+            {tieneRol(...ROLES_ALUMNOS) && (
+              <li>
+                <Link
+                  to="/home/alumnos"
+                  className={`sidebar-link ${location.pathname.includes('/alumnos') ? 'active' : ''}`}
+                >
+                  Alumnos
+                </Link>
+              </li>
+            )}
+            {tieneRol(...ROLES_INFORMES) && (
+              <li>
+                <Link
+                  to="/home/informes"
+                  className={`sidebar-link ${location.pathname.includes('/informes') ? 'active' : ''}`}
+                >
+                  Informes
                 </Link>
               </li>
             )}

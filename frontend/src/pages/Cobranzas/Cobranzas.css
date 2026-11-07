@@ -1,6 +1,3 @@
-/* Sprint 4 - Gestión de Cobranzas.
-   Reutiliza las clases compartidas del ABM de Roles (.btn-agregar, .btn-cancelar,
-   .action-btn, .modal-overlay, .modal-content, .modal-actions) para mantener el mismo estilo. */
 
 .cobranzas-container {
   width: 100%;
@@ -29,8 +26,6 @@
   font-size: 15px;
   margin: 0;
 }
-
-/* ---------- Filtros (HU11) ---------- */
 
 .cobranzas-filtros {
   display: flex;
@@ -62,8 +57,6 @@
   border-color: #a35d18;
   box-shadow: 0 0 0 3px rgba(163, 93, 24, 0.12);
 }
-
-/* ---------- Tabla ---------- */
 
 .cobranzas-card {
   background-color: white;
@@ -182,8 +175,6 @@
   color: #c53030;
 }
 
-/* ---------- Modal alta / edición (HU09 / HU10) ---------- */
-
 .cobranza-modal {
   width: 440px;
   max-width: calc(100vw - 32px);
@@ -228,7 +219,6 @@
   color: #718096;
 }
 
-/* Pisa el estilo genérico ".modal-content input" del ABM de Roles */
 .cobranza-modal .input-monto input {
   border: none;
   margin: 0;
@@ -288,8 +278,6 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-/* ---------- Modal de eliminación (HU12) ---------- */
 
 .cobranza-modal-eliminar {
   width: 380px;
